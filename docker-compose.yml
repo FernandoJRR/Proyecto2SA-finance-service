@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  finance-service:
+    build:
+      context: .   # assumes Dockerfile is in your service project root
+      dockerfile: Dockerfile
+    image: finance-service:latest
+    environment:
+      # Spring will pick these up or fall back to your defaults
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE}
+      - SPRING_PROFILES_ACTIVE=local
+      - SPRING_APPLICATION_NAME=finance-service
+    ports:
+      - "0"   # optional; your service picks a random port (server.port=0). Docker does dynamic mapping.
+    # If you don’t map ports (or map “0”) it may not be reachable externally; you may prefer a fixed port for local dev:
+    # ports:
+    #   - "8080:8080"
+    depends_on:
+      # no dependencies here for Eureka or DB, since they exist externally
+      # but you could wait-for logic if needed
+    restart: unless-stopped
+    networks:
+      - backend-net
+
+networks:
+  backend-net:
+    driver: bridge
