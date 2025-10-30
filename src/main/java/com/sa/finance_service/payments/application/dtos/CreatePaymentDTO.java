@@ -3,10 +3,12 @@ package com.sa.finance_service.payments.application.dtos;
 import java.math.BigDecimal;
 import java.util.UUID;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
 public class CreatePaymentDTO {
     private BigDecimal subtotal;

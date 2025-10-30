@@ -25,7 +25,7 @@ public class KafkaCreatedUserListener {
         topics = TopicConstants.USER_CREATED,
         groupId = GroupsConstants.USER_SERVICE_GROUP_ID
     )
-    public void onRequestGenericMail(@Payload UserCreatedEventDTO message) {
+    public void onCreatedUser(@Payload UserCreatedEventDTO message) {
         try {
             CreateWalletDTO createWalletDTO = new CreateWalletDTO(message.getUserId(), OwnerType.CUSTOMER);
 
