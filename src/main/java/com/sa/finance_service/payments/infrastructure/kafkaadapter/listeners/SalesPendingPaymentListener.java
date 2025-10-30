@@ -11,6 +11,7 @@ import com.sap.common_lib.events.topics.TopicConstants;
 import com.sa.finance_service.payments.application.dtos.CreatePaymentDTO;
 import com.sa.finance_service.payments.application.dtos.TransactionableType;
 import com.sa.finance_service.payments.application.inputports.CreatePaymentInputPort;
+import com.sa.finance_service.payments.infrastructure.kafkaadapter.adapters.UpdatePaidStatusSaleAdapter;
 import com.sap.common_lib.dto.response.add.events.AddPendingPaymentEventDTO;
 import com.sap.common_lib.dto.response.sales.events.PaidPendingSaleEventDTO;
 
@@ -23,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 public class SalesPendingPaymentListener {
 
     private final CreatePaymentInputPort createPaymentInputPort;
+    private final UpdatePaidStatusSaleAdapter updatePaidStatusSaleAdapter;
 
     @KafkaListener(
         topics = TopicConstants.SALES_PENDING_PAYMENT_TOPIC,
@@ -43,15 +45,19 @@ public class SalesPendingPaymentListener {
             );
 
             createPaymentInputPort.handle(createPaymentDTO);
+
+            updatePaidStatusSaleAdapter.sendUpdatePaidSaleEvent(message.saleId(), true, "Pago exitoso");
+
             log.info(
-                "Cartera creada exitosamente para usuario {}",
-                message.customerId());
+                "Pago exitoso para la venta {}",
+                message.saleId());
         } catch (Exception exception) {
+            updatePaidStatusSaleAdapter.sendUpdatePaidSaleEvent(message.saleId(), false, "Pago fallido por: "+exception);
             log.error(
-                "No se pudo crear la cartera para el usuario por: {}",
+                "No se pudo crear el pago por: {}",
                 message,
                 exception);
-            throw new IllegalStateException("Error al procesar la peticion de la cartera", exception);
+            throw new IllegalStateException("Error al procesar la peticion del pago", exception);
         }
     }
 }
