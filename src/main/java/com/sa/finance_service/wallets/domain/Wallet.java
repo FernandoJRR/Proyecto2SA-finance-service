@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class Wallet {
+    private UUID id;
     private BigDecimal balance;
     private UUID ownerId;
     private OwnerType ownerType;

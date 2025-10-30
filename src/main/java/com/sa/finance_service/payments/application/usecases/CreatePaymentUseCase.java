@@ -6,10 +6,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
 
 import com.sa.finance_service.payments.application.dtos.CreatePaymentDTO;
+import com.sa.finance_service.payments.application.dtos.TransactionableType;
 import com.sa.finance_service.payments.application.inputports.CreatePaymentInputPort;
 import com.sa.finance_service.payments.application.outputports.SavePaymentOutputPort;
 import com.sa.finance_service.payments.domain.Payment;
-import com.sa.finance_service.wallets.application.outputports.FindByOwnerIdOutputPort;
+import com.sa.finance_service.wallets.application.outputports.FindWalletByOwnerIdOutputPort;
 import com.sa.finance_service.wallets.application.outputports.SaveWalletOutputPort;
 import com.sa.finance_service.wallets.domain.Wallet;
 
@@ -24,7 +25,7 @@ public class CreatePaymentUseCase implements CreatePaymentInputPort {
 
     private final SaveWalletOutputPort saveWalletOutputPort;
     private final SavePaymentOutputPort savePaymentOutputPort;
-    private final FindByOwnerIdOutputPort findByOwnerIdOutputPort;
+    private final FindWalletByOwnerIdOutputPort findByOwnerIdOutputPort;
 
     @Override
     @Transactional
@@ -32,17 +33,34 @@ public class CreatePaymentUseCase implements CreatePaymentInputPort {
         Payment payment = Payment.create(
             createPaymentDTO.getSubtotal(),
             createPaymentDTO.getDiscount(),
-            createPaymentDTO.getTotal()
+            createPaymentDTO.getTotal(),
+            createPaymentDTO.getOriginId(),
+            createPaymentDTO.getOriginName(),
+            createPaymentDTO.getOriginType(),
+            createPaymentDTO.getDestinationId(),
+            createPaymentDTO.getDestinationName(),
+            createPaymentDTO.getDestinationType()
         );
 
-        Wallet originWallet = findByOwnerIdOutputPort.handle(createPaymentDTO.getOriginId());
-        Wallet destinationWallet = findByOwnerIdOutputPort.handle(createPaymentDTO.getDestinationId());
-
         BigDecimal amount = payment.getTotal();
-        originWallet.setBalance(originWallet.getBalance().subtract(amount));
-        destinationWallet.setBalance(destinationWallet.getBalance().add(amount));
 
-        saveWalletOutputPort.save(originWallet);
+        //If its a recharge there is NO origin wallet
+        if (!createPaymentDTO.getOriginType().equals(TransactionableType.RECHARGE)) {
+            if (createPaymentDTO.getOriginId() == null) {
+                throw new IllegalArgumentException("El id de origen es obligatorio");
+            }
+
+            if (createPaymentDTO.getOriginName() == null) {
+                throw new IllegalArgumentException("El nombre de origen es obligatorio");
+            }
+
+            Wallet originWallet = findByOwnerIdOutputPort.handle(createPaymentDTO.getOriginId());
+            originWallet.setBalance(originWallet.getBalance().subtract(amount));
+            saveWalletOutputPort.save(originWallet);
+        }
+
+        Wallet destinationWallet = findByOwnerIdOutputPort.handle(createPaymentDTO.getDestinationId());
+        destinationWallet.setBalance(destinationWallet.getBalance().add(amount));
         saveWalletOutputPort.save(destinationWallet);
 
         savePaymentOutputPort.handle(payment);
