@@ -1,6 +1,7 @@
 package com.sa.finance_service.wallets.infrastructure.restadapter;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sa.finance_service.wallets.application.dtos.CreateWalletDTO;
 import com.sa.finance_service.wallets.application.inputport.CreateWalletInputPort;
+import com.sa.finance_service.wallets.application.inputport.FindAllWalletsInputPort;
 import com.sa.finance_service.wallets.application.inputport.FindWalletByOwnerIdInputPort;
 import com.sa.finance_service.wallets.application.inputport.RechargeWalletInputPort;
 import com.sa.finance_service.wallets.domain.Wallet;
@@ -37,6 +39,7 @@ import lombok.RequiredArgsConstructor;
 public class WalletController {
 
     private final CreateWalletInputPort createWalletInputPort;
+    private final FindAllWalletsInputPort findAllWalletsInputPort;
     private final FindWalletByOwnerIdInputPort findWalletByOwnerIdInputPort;
     private final RechargeWalletInputPort rechargeWalletInputPort;
 
@@ -52,6 +55,16 @@ public class WalletController {
     })
     public Wallet createWallet(@Valid @RequestBody CreateWalletDTO createWalletDTO) {
         return createWalletInputPort.handle(createWalletDTO);
+    }
+
+    @GetMapping
+    @Operation(
+        summary = "Listar todas las carteras",
+        description = "Devuelve la colección completa de carteras registradas."
+    )
+    @ApiResponse(responseCode = "200", description = "Listado obtenido correctamente")
+    public List<Wallet> findAll() {
+        return findAllWalletsInputPort.handle();
     }
 
     @GetMapping(path = "/{ownerId}")
