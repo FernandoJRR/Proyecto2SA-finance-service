@@ -56,6 +56,7 @@ public class WalletController {
         @ApiResponse(responseCode = "201", description = "Cartera creada correctamente"),
         @ApiResponse(responseCode = "400", description = "Datos inválidos en la solicitud")
     })
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CLIENT')")
     public Wallet createWallet(@Valid @RequestBody CreateWalletDTO createWalletDTO) {
         return createWalletInputPort.handle(createWalletDTO);
     }
@@ -66,6 +67,7 @@ public class WalletController {
         description = "Devuelve la colección completa de carteras registradas."
     )
     @ApiResponse(responseCode = "200", description = "Listado obtenido correctamente")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CLIENT')")
     public List<Wallet> findAll() {
         return findAllWalletsInputPort.handle();
     }
@@ -79,6 +81,7 @@ public class WalletController {
         @ApiResponse(responseCode = "200", description = "Cartera encontrada"),
         @ApiResponse(responseCode = "404", description = "No existe una cartera para el propietario indicado")
     })
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CLIENT')")
     public Wallet findByOwnerId(
         @Parameter(description = "Identificador del propietario de la cartera", required = true)
         @PathVariable UUID ownerId
@@ -96,6 +99,7 @@ public class WalletController {
         @ApiResponse(responseCode = "400", description = "Solicitud inválida"),
         @ApiResponse(responseCode = "404", description = "No existe una cartera para el propietario indicado")
     })
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CLIENT')")
     public Wallet rechargeWallet(
         @Parameter(description = "Identificador del propietario de la cartera", required = true)
         @PathVariable UUID ownerId,
