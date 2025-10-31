@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class KafkaCreatedUserListener {
 
-    private CreateWalletInputPort createWalletInputPort;
+    private final CreateWalletInputPort createWalletInputPort;
 
     @KafkaListener(
         topics = TopicConstants.USER_CREATED,
