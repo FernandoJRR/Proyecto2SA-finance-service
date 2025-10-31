@@ -66,6 +66,7 @@ public class WalletController {
         description = "Devuelve la colección completa de carteras registradas."
     )
     @ApiResponse(responseCode = "200", description = "Listado obtenido correctamente")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CINEMA_ADMIN') or hasRole('CLIENT')")
     public List<Wallet> findAll() {
         return findAllWalletsInputPort.handle();
     }
