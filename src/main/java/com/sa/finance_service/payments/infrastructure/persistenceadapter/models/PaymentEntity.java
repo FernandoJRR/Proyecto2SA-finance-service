@@ -27,7 +27,6 @@ import lombok.NoArgsConstructor;
 public class PaymentEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false, updatable = false)
     private UUID id;
 

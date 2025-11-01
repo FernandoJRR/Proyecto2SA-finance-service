@@ -12,7 +12,6 @@ import com.sa.finance_service.payments.application.dtos.CreatePaymentDTO;
 import com.sa.finance_service.payments.application.dtos.TransactionableType;
 import com.sa.finance_service.payments.application.inputports.CreatePaymentInputPort;
 import com.sa.finance_service.payments.infrastructure.kafkaadapter.adapters.UpdatePaidStatusSaleAdapter;
-import com.sap.common_lib.dto.response.add.events.AddPendingPaymentEventDTO;
 import com.sap.common_lib.dto.response.sales.events.PaidPendingSaleEventDTO;
 
 import lombok.RequiredArgsConstructor;
