@@ -99,7 +99,6 @@ public class WalletController {
         @ApiResponse(responseCode = "400", description = "Solicitud inválida"),
         @ApiResponse(responseCode = "404", description = "No existe una cartera para el propietario indicado")
     })
-    @PreAuthorize("hasRole('ADMIN') or hasRole('CLIENT') or hasRole('CINEMA_ADMIN') or hasRole('SPONSOR')")
     public Wallet rechargeWallet(
         @Parameter(description = "Identificador del propietario de la cartera", required = true)
         @PathVariable UUID ownerId,
