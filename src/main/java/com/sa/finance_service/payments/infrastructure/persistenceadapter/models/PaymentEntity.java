@@ -42,7 +42,7 @@ public class PaymentEntity {
     @Column(name = "origin_id", nullable = true)
     private UUID originId;
 
-    @Column(name = "origin_name", nullable = false, length = 255)
+    @Column(name = "origin_name", nullable = true, length = 255)
     private String originName;
 
     @Enumerated(EnumType.STRING)
