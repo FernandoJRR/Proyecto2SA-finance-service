@@ -39,7 +39,7 @@ public class PaymentEntity {
     @Column(name = "total", nullable = false, precision = 19, scale = 4)
     private BigDecimal total;
 
-    @Column(name = "origin_id", nullable = false)
+    @Column(name = "origin_id", nullable = true)
     private UUID originId;
 
     @Column(name = "origin_name", nullable = false, length = 255)
