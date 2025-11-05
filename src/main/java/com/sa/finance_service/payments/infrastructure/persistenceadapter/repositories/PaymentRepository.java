@@ -1,5 +1,6 @@
 package com.sa.finance_service.payments.infrastructure.persistenceadapter.repositories;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -9,4 +10,6 @@ import com.sa.finance_service.payments.infrastructure.persistenceadapter.models.
 
 public interface PaymentRepository extends JpaRepository<PaymentEntity, UUID> {
     public Optional<PaymentEntity> findOneById(UUID id);
+
+    public List<PaymentEntity> findByOriginIdOrDestinationId(UUID originId, UUID destinationId);
 }

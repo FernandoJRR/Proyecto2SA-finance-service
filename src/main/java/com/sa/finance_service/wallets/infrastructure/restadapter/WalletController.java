@@ -15,9 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.sa.finance_service.payments.domain.Payment;
 import com.sa.finance_service.wallets.application.dtos.CreateWalletDTO;
 import com.sa.finance_service.wallets.application.inputport.CreateWalletInputPort;
 import com.sa.finance_service.wallets.application.inputport.FindAllWalletsInputPort;
+import com.sa.finance_service.wallets.application.inputport.FindPaymentsByWalletInputPort;
 import com.sa.finance_service.wallets.application.inputport.FindWalletByOwnerIdInputPort;
 import com.sa.finance_service.wallets.application.inputport.RechargeWalletInputPort;
 import com.sa.finance_service.wallets.domain.Wallet;
@@ -44,6 +46,7 @@ public class WalletController {
     private final CreateWalletInputPort createWalletInputPort;
     private final FindAllWalletsInputPort findAllWalletsInputPort;
     private final FindWalletByOwnerIdInputPort findWalletByOwnerIdInputPort;
+    private final FindPaymentsByWalletInputPort findPaymentsByWalletInputPort;
     private final RechargeWalletInputPort rechargeWalletInputPort;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -87,6 +90,23 @@ public class WalletController {
         @PathVariable UUID ownerId
     ) {
         return findWalletByOwnerIdInputPort.handle(ownerId);
+    }
+
+    @GetMapping(path = "/{walletId}/payments")
+    @Operation(
+        summary = "Consultar pagos asociados a una cartera",
+        description = "Obtiene todos los pagos donde la cartera participa como origen o destino."
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Pagos encontrados"),
+        @ApiResponse(responseCode = "404", description = "No existe una cartera para el propietario indicado")
+    })
+    @PreAuthorize("hasRole('ADMIN') or hasRole('CLIENT') or hasRole('CINEMA_ADMIN') or hasRole('SPONSOR')")
+    public List<Payment> findPayments(
+        @Parameter(description = "Identificador de la cartera", required = true)
+        @PathVariable UUID walletId
+    ) {
+        return findPaymentsByWalletInputPort.handle(walletId);
     }
 
     @PostMapping(path = "/{ownerId}/recharge", consumes = MediaType.APPLICATION_JSON_VALUE)
