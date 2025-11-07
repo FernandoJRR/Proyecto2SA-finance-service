@@ -1,13 +1,11 @@
 package com.sa.finance_service.payments.infrastructure.kafkaadapter.adapters;
 
-import java.math.BigDecimal;
 import java.util.UUID;
 
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import com.sa.finance_service.payments.application.outputports.UpdatePaidStatusAddOutputPort;
-import com.sap.common_lib.dto.response.add.events.AddPendingPaymentEventDTO;
 import com.sap.common_lib.dto.response.add.events.ChangePaidStateAddEventDTO;
 import com.sap.common_lib.events.topics.TopicConstants;
 
